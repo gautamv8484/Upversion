@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AppProvider } from '@/store/AppContext';
 import { ToastProvider } from '@/components/ui/Toast';
@@ -51,6 +52,7 @@ import AdminVerifications from '@/pages/dashboard/admin/AdminVerifications';
 import AdminReports from '@/pages/dashboard/admin/AdminReports';
 import AdminSettings from '@/pages/dashboard/admin/AdminSettings';
 
+// ── Scroll to top on route change ─────────────────────
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -58,9 +60,12 @@ function ScrollToTop() {
   }, [pathname]);
   return null;
 }
+
+// ── Main Layout ───────────────────────────────────────
 function AppLayout() {
   const { pathname } = useLocation();
-  const hideFooter = pathname.startsWith('/dashboard') || pathname.startsWith('/admin');
+  const hideFooter =
+    pathname.startsWith('/dashboard') || pathname.startsWith('/admin');
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -151,7 +156,6 @@ export default function App() {
   return (
     <BrowserRouter>
       <AppProvider>
-        {/* ToastProvider AppProvider ke andar hona chahiye */}
         <ToastProvider>
           <AppLayout />
         </ToastProvider>
