@@ -4,9 +4,8 @@ import { Eye, EyeOff, Zap, ArrowLeft, Mail, Lock } from 'lucide-react';
 import { useApp } from '@/store/AppContext';
 import { useToast } from '@/components/ui/Toast';
 
-
 export default function LoginPage() {
-  const { login,users } = useApp();
+  const { login, users } = useApp();
   const { showToast } = useToast();
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: '', password: '' });
@@ -24,47 +23,31 @@ export default function LoginPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  if (!validate()) return;
+    e.preventDefault();
+    if (!validate()) return;
 
-  setLoading(true);
-  await new Promise(r => setTimeout(r, 600));
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 600));
 
-  const result = login(form.email, form.password);
-  setLoading(false);
+    const result = login(form.email, form.password);
+    setLoading(false);
 
-  if (result.success) {
-    showToast('success', 'Welcome back! 👋', 'You have been logged in successfully.');
-
-    // Find the actual user to determine role
-    const loggedInUser = users.find(u => u.email === form.email);
-    let path = '/dashboard/candidate';
-    if (loggedInUser?.role === 'recruiter') path = '/dashboard/recruiter';
-    if (loggedInUser?.role === 'admin') path = '/admin';
-
-    navigate(path);
-  } else {
-    showToast('error', 'Login Failed', result.message);
-    setErrors({ form: result.message });
-  }
-};
-
-  // Demo accounts
-  const demoAccounts = [
-    { label: 'Candidate', email: 'sarah@example.com', password: 'password123', color: 'blue' },
-    { label: 'Recruiter', email: 'maria@example.com', password: 'password123', color: 'purple' },
-    { label: 'Admin',     email: 'admin@workly.com',  password: 'admin123',    color: 'red' },
-  ];
-
-  const fillDemo = (email: string, password: string) => {
-    setForm({ email, password });
-    setErrors({});
+    if (result.success) {
+      showToast('success', 'Welcome back! 👋', 'You have been logged in successfully.');
+      const loggedInUser = users.find(u => u.email === form.email);
+      let path = '/dashboard/candidate';
+      if (loggedInUser?.role === 'recruiter') path = '/dashboard/recruiter';
+      if (loggedInUser?.role === 'admin') path = '/admin';
+      navigate(path);
+    } else {
+      showToast('error', 'Login Failed', result.message);
+      setErrors({ form: result.message });
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#F7F7F8] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-md">
-        {/* Back */}
         <Link
           to="/"
           className="inline-flex items-center gap-1.5 text-sm text-[#5F6368] hover:text-[#111111] mb-6 transition-colors"
@@ -82,36 +65,6 @@ export default function LoginPage() {
               Welcome back
             </h1>
             <p className="text-sm text-[#5F6368] mt-1">Sign in to your WorkHive account</p>
-          </div>
-
-          {/* Demo Accounts */}
-          <div className="mb-6 p-4 bg-[#F7F7F8] rounded-xl border border-[#E5E7EB]">
-            <p className="text-xs font-semibold text-[#5F6368] uppercase tracking-wide mb-3">
-              🎭 Try a demo account
-            </p>
-            <div className="grid grid-cols-3 gap-2">
-              {demoAccounts.map(acc => (
-                <button
-                  key={acc.email}
-                  type="button"
-                  onClick={() => fillDemo(acc.email, acc.password)}
-                  className="py-2.5 px-2 text-xs border border-[#E5E7EB] bg-white rounded-lg
-                    hover:border-[#C1121F] hover:bg-red-50 transition-all text-center
-                    font-medium text-gray-700 shadow-sm"
-                >
-                  {acc.label}
-                </button>
-              ))}
-            </div>
-            <p className="text-[10px] text-[#5F6368] mt-2 text-center">
-              Click any role to auto-fill credentials
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3 mb-6">
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
-            <span className="text-xs text-[#5F6368] font-medium">or sign in manually</span>
-            <div className="flex-1 h-px bg-[#E5E7EB]" />
           </div>
 
           {/* Error Banner */}
@@ -136,29 +89,18 @@ export default function LoginPage() {
                   onChange={e => setForm(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="you@example.com"
                   autoComplete="email"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm transition-colors
-                    focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 ${
-                    errors.email
-                      ? 'border-red-400 bg-red-50'
-                      : 'border-[#E5E7EB] focus:border-[#C1121F]'
-                  }`}
+                  className={'w-full pl-10 pr-4 py-3 border rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 ' +
+                    (errors.email ? 'border-red-400 bg-red-50' : 'border-[#E5E7EB] focus:border-[#C1121F]')}
                 />
               </div>
-              {errors.email && (
-                <p className="text-xs text-red-600 mt-1.5 flex items-center gap-1">
-                  ⚠ {errors.email}
-                </p>
-              )}
+              {errors.email && <p className="text-xs text-red-600 mt-1.5">⚠ {errors.email}</p>}
             </div>
 
             {/* Password */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-sm font-medium text-gray-700">Password</label>
-                <Link
-                  to="/forgot-password"
-                  className="text-xs text-[#C1121F] hover:underline font-medium"
-                >
+                <Link to="/forgot-password" className="text-xs text-[#C1121F] hover:underline font-medium">
                   Forgot password?
                 </Link>
               </div>
@@ -170,12 +112,8 @@ export default function LoginPage() {
                   onChange={e => setForm(prev => ({ ...prev, password: e.target.value }))}
                   placeholder="Enter your password"
                   autoComplete="current-password"
-                  className={`w-full pl-10 pr-10 py-3 border rounded-xl text-sm transition-colors
-                    focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 ${
-                    errors.password
-                      ? 'border-red-400 bg-red-50'
-                      : 'border-[#E5E7EB] focus:border-[#C1121F]'
-                  }`}
+                  className={'w-full pl-10 pr-10 py-3 border rounded-xl text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-[#C1121F]/20 ' +
+                    (errors.password ? 'border-red-400 bg-red-50' : 'border-[#E5E7EB] focus:border-[#C1121F]')}
                 />
                 <button
                   type="button"
@@ -185,20 +123,14 @@ export default function LoginPage() {
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              {errors.password && (
-                <p className="text-xs text-red-600 mt-1.5 flex items-center gap-1">
-                  ⚠ {errors.password}
-                </p>
-              )}
+              {errors.password && <p className="text-xs text-red-600 mt-1.5">⚠ {errors.password}</p>}
             </div>
 
             {/* Submit */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#C1121F] hover:bg-[#9B0D18] text-white font-semibold
-                rounded-xl text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed
-                flex items-center justify-center gap-2 mt-2 shadow-sm"
+              className="w-full py-3 bg-[#C1121F] hover:bg-[#9B0D18] text-white font-semibold rounded-xl text-sm transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-2 shadow-sm"
             >
               {loading ? (
                 <>
@@ -219,7 +151,6 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Footer note */}
         <p className="text-center text-xs text-[#5F6368] mt-4">
           By signing in, you agree to our{' '}
           <Link to="/terms" className="hover:underline">Terms</Link>
