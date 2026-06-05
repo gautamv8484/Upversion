@@ -1,8 +1,6 @@
 User-agent: *
 Allow: /
-
-# Block dashboard pages from indexing
 Disallow: /dashboard/
 Disallow: /admin/
 
-Sitemap: https://Upversion.app/sitemap.xml
+Sitemap: https://upversion.co.in/sitemap.xml
